@@ -1,0 +1,120 @@
+html(lang="en")
+  head
+    title Safety and reports - PulsePals
+    style
+        include ./assets/reports.css
+  body
+    nav
+      .container1
+        h2 PulsePals
+        ul
+          li
+            a(href="/") Home
+          li
+            a(href="/about") About
+          li
+            a(href="#") Events
+          li
+            a(href="#") Partner matching
+          li
+            a(href="/report") Safety and reports
+        .right1
+          a(href="#") sign in
+          a(href="#", class="btn btn-primary") register
+
+    main
+      .container
+        h1 Code of Conduct
+        .code-of-conduct
+          p At PulsePals, we are committed to fostering a welcoming, inclusive, and respectful community for all members. Whether you're joining us for running, cycling, or any other activity, we expect everyone to adhere to the following guidelines to ensure a positive and safe experience for all.
+          h2 Our Values
+          ul
+            li Inclusivity: Everyone is welcome, regardless of fitness level, background, or experience.
+            li Respect: Treat all members with kindness, empathy, and respect.
+            li Safety: Prioritize the safety and well-being of yourself and others.
+            li Accountability: Take responsibility for your actions and contribute to a supportive environment.
+            li Community: Build meaningful connections and celebrate each other's progress.
+          h2 Expected Behavior
+          ul
+            li Be Kind and Respectful: Treat all members with dignity and respect. Avoid any form of harassment, discrimination, or offensive behavior.
+            li Encourage and Support: Motivate others and celebrate their achievements, no matter how big or small.
+            li Communicate Clearly: Be honest and transparent in your interactions. If you have concerns, address them respectfully.
+            li Respect Boundaries: Always ask for consent before sharing personal information or photos of others.
+            li Follow Safety Guidelines: Adhere to local laws, traffic rules, and safety recommendations during activities.
+            li Be Punctual: Arrive on time for meetups and communicate if you’re running late or cannot attend.
+            li Stay Inclusive: Welcome newcomers and make an effort to include everyone in activities.
+          h2 Unacceptable Behavior
+          p The following behaviors are not tolerated in the PulsePals community:
+          ul
+            li Harassment, bullying, or intimidation of any kind.
+            li Discrimination based on race, gender, age, religion, sexual orientation, disability, or any other characteristic.
+            li Inappropriate or offensive language, gestures, or imagery.
+            li Unsafe or reckless behavior during activities.
+            li Sharing personal information of others without their consent.
+            li Any form of violence or threats.
+          h2 Reporting Violations
+          p If you experience or witness any behaviour that violates this Code of Conduct, please report it to a member of staff immediately and to the PulsePals team at team@pulsepals.com or send a report down below and we will get back to you as soon as we can. All reports will be taken seriously and handled confidentially.
+          h2 Consequences of Violations
+          p Violations of this Code of Conduct may result in:
+          ul
+            li A warning and request to change behaviour.
+            li Temporary suspension from PulsePals activities.
+            li Permanent removal from the PulsePals community.
+          p The PulsePals team reserves the right to take appropriate action based on the severity of the violation.
+          h2 Our Commitment
+          p The PulsePals team is dedicated to maintaining a safe and inclusive environment for all members. We will actively enforce this Code of Conduct and work to address any issues promptly and fairly. Together, we can create a community where everyone feels valued, supported, and inspired to achieve their fitness goals.
+          p Thank you for being a part of PulsePals and helping us build a positive and welcoming community!
+
+        h1 Submit a Report
+        form(action="/submit-report", method="POST")
+          .form-group
+            label(for="name") Name:
+            input(type="text", id="name", name="name", required)
+          .form-group
+            label(for="phone") Phone Number:
+            input(type="tel", id="phone", name="phone", required)
+          .form-group
+            label(for="report") Report:
+            textarea(id="report", name="report", rows="5", required)
+          button(type="submit") Submit Report
+    footer
+      .container
+        div
+          h3 PulsePals
+          ul
+            li
+              a(href="/") Home
+            li
+              a(href="/about") About
+            li
+              a(href="#") Events
+            li
+              a(href="#") Partner Matching
+            li
+              a(href="/report") Safety and Reports
+        div
+          h3 Contact Us
+          .contact-info
+            p Email: info@pulsepals.com
+            p Phone: +1 (123) 456-7890
+            p Address: 123 Fitness St, Health City, HC 12345
+        div
+          h3 Follow Us
+          ul
+            li
+              a(href="#") Facebook
+            li
+              a(href="#") Twitter
+            li
+              a(href="#") Instagram
+            li
+              a(href="#") Github 
+        div
+          h3 Legal
+          ul
+            li
+              a(href="#") Privacy Policy
+            li
+              a(href="#") Terms of Service
+            li
+              a(href="#") Cookie Policy
