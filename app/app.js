@@ -1,48 +1,57 @@
-// Import express.js
 const express = require("express");
+const bodyParser = require("body-parser");
+const path = require("path");
+const db = require("./services/db"); // Import the db.js file
 
-// Create express app
-var app = express();
+const app = express();
+const port = 3000;
 
-// Add static files location
-app.use(express.static("static"));
+// Middleware
+app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(bodyParser.json()); // Parse JSON bodies
+app.use(express.static(path.join(__dirname, "public")));
 
-// Get the functions in the db.js file to use
-const db = require('./services/db');
+// Set view engine to Pug
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 
-// Create a route for root - /
-app.get("/", function(req, res) {
-    res.send("Hello world!");
+// Routes
+app.get("/", (req, res) => {
+  res.render("Home");
 });
 
-// Create a route for testing the db
-app.get("/db_test", function(req, res) {
-    // Assumes a table called test_table exists in your database
-    sql = 'select * from test_table';
-    db.query(sql).then(results => {
-        console.log(results);
-        res.send(results)
-    });
+app.get("/report", (req, res) => {
+  res.render("report");
 });
 
-// Create a route for /goodbye
-// Responds to a 'GET' request
-app.get("/goodbye", function(req, res) {
-    res.send("Goodbye world!");
+app.get("/about", (req, res) => {
+    res.render("about");
+  });
+
+app.post("/submit-report", async (req, res) => {
+  console.log(req.body);
+  const { name, phone, report } = req.body;
+
+  if (!name || !phone || !report) {
+    return res.status(400).send("All fields are required.");
+  }
+
+  try {
+    const query = `
+      INSERT INTO reports (name, phone, report)
+      VALUES (?, ?, ?)
+    `;
+    await db.query(query, [name, phone, report]); // Use db.query from db.js
+    res.send("Report submitted successfully!");
+  } catch (err) {
+    console.error("Error inserting report:", err);
+    res.status(500).send("Error submitting report");
+  }
 });
 
-// Create a dynamic route for /hello/<name>, where name is any value provided by user
-// At the end of the URL
-// Responds to a 'GET' request
-app.get("/hello/:name", function(req, res) {
-    // req.params contains any parameters in the request
-    // We can examine it in the console for debugging purposes
-    console.log(req.params);
-    //  Retrieve the 'name' parameter and use it in a dynamically generated page
-    res.send("Hello " + req.params.name);
-});
 
 // Start server on port 3000
 app.listen(3000,function(){
     console.log(`Server running at http://127.0.0.1:3000/`);
 });
+
