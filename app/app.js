@@ -28,6 +28,10 @@ app.get("/about", (req, res) => {
     res.render("about");
   });
 
+  app.get("/events", (req, res) => {
+    res.render("events");
+  });
+
 app.post("/submit-report", async (req, res) => {
   console.log(req.body);
   const { name, phone, report } = req.body;
