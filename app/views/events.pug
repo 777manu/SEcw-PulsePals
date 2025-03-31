@@ -7,7 +7,7 @@ html(lang="en")
   body
     nav
       .container
-        h2 Pulsepals
+        h2 PulsePals
         ul
           li
             a(href="/") Home
@@ -16,50 +16,64 @@ html(lang="en")
           li
             a(href="/events") Events
           li
-            a(href="#") Partner matching
+            a(href="#") Partner Matching
           li
-            a(href="/report") Safety and reports
+            a(href="/report") Safety and Reports
         .right
-          a(href="#") sign in
-          a(href="#", class="btn btn-primary") register
-   
+          a(href="#") Sign In
+          a(href="#", class="btn btn-primary") Register
+
     aside.events-menu
-        ul
-          li 
-            a(href="#") All Events
-          li 
-            a(href="#") Upcoming Events
-          li
-            a(href="#") Past Events
-          li
-            a(href="#") Event Guidelines   
+      ul
+        li 
+          a(href="#") All Events
+        li 
+          a(href="#") Upcoming Events
+        li
+          a(href="#") Past Events
+        li
+          a(href="#") Event Guidelines   
 
     main
       .left
-    section#big-boxes
-      .big-boxes__container
-        .big-box
-          img(src="/images/644bf64efcc0d60bf0759328_IMG_3685-1.jpeg", alt="Running")
-          a(href="#")
-            h3 Running
-          p Running isn't just exercise—it’s freedom, energy, and a step toward a healthier you. Lace up and hit the road! 🏃‍♂️🔥
-        .big-box
-          img(src="/images/GettyImages-1155448643.jpg", alt="Cycling")
-          a(href="#")
-            h3 Cycling
-          p Cycling boosts your body, clears your mind, and takes you places—one turn at a time. 🚴‍♂️💨
-   
-      .right 
-    section#testimonials
-      h1 Featured Events
-      h2 Sunday Morning 5K Run
+        section#big-boxes
+          .big-boxes__container
+            .big-box
+              img(src="/images/644bf64efcc0d60bf0759328_IMG_3685-1.jpeg", alt="Running")
+              a(href="#")
+                h3 Running
+              p Running isn't just exercise—it’s freedom, energy, and a step toward a healthier you. Lace up and hit the road! 🏃‍♂️🔥
+              form(action="/register-event", method="POST")
+                input(type="hidden", name="event_id", value="1") 
+                label(for="user_name") Name:
+                input(type="text", name="user_name", required)
+                label(for="user_email") Email:
+                input(type="email", name="user_email", required)
+                button(type="submit", class="btn btn-primary") Sign Up
+
+            .big-box
+              img(src="/images/GettyImages-1155448643.jpg", alt="Cycling")
+              a(href="#")
+                h3 Cycling
+              p Cycling boosts your body, clears your mind, and takes you places—one turn at a time. 🚴‍♂️💨
+              form(action="/register-event", method="POST")
+                input(type="hidden", name="event_id", value="2") 
+                label(for="user_name") Name:
+                input(type="text", name="user_name", required)
+                label(for="user_email") Email:
+                input(type="email", name="user_email", required)
+                button(type="submit", class="btn btn-primary") Sign Up
+
+      .right
+        section#featuredevents
+          h1 Featured Events
+          h2 Sunday Morning 5K Run
           ul
             li 📅 Date & Time: Sunday, July 4th, 8:00 AM
-            li 📍 Location: Finsbury, London
+            li 📍 Location: Finsbury Park, London
             li 🏃 Event Type: Running
           h3 About the Event
           p Join us for a scenic 5K run through Central Park! Whether you're a beginner or an experienced runner, this event is for everyone.
-          ul
             li Level: Intermediate
             li Route: 5K loop through scenic paths
             li Theme: Charity Run - Supporting Local Health Initiatives

@@ -1,14 +1,14 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
-const db = require("./services/db"); // Import the db.js file
+const db = require("./services/db");
 
 const app = express();
 const port = 3000;
 
 // Middleware
-app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
-app.use(bodyParser.json()); // Parse JSON bodies
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Set view engine to Pug
@@ -25,37 +25,47 @@ app.get("/report", (req, res) => {
 });
 
 app.get("/about", (req, res) => {
-    res.render("about");
-  });
+  res.render("about");
+});
 
-  app.get("/events", (req, res) => {
-    res.render("events");
-  });
+// Fetch events and registrations for rendering
+app.get("/events", async (req, res) => {
+  try {
+    const eventQuery = "SELECT * FROM events";
+    const events = await db.query(eventQuery);
 
-app.post("/submit-report", async (req, res) => {
-  console.log(req.body);
-  const { name, phone, report } = req.body;
+    const registrationQuery = "SELECT * FROM registrations";
+    const registrations = await db.query(registrationQuery);
 
-  if (!name || !phone || !report) {
+    res.render("events", { events, registrations });
+  } catch (err) {
+    console.error("Error fetching events:", err);
+    res.status(500).send("Error loading events");
+  }
+});
+
+// Event registration
+app.post("/register-event", async (req, res) => {
+  const { user_name, user_email, event_id } = req.body;
+
+  if (!user_name || !user_email || !event_id) {
     return res.status(400).send("All fields are required.");
   }
 
   try {
     const query = `
-      INSERT INTO reports (name, phone, report)
+      INSERT INTO registrations (user_name, user_email, event_id)
       VALUES (?, ?, ?)
     `;
-    await db.query(query, [name, phone, report]); // Use db.query from db.js
-    res.send("Report submitted successfully!");
+    await db.query(query, [user_name, user_email, event_id]);
+    res.send("Successfully registered for the event!");
   } catch (err) {
-    console.error("Error inserting report:", err);
-    res.status(500).send("Error submitting report");
+    console.error("Error registering for event:", err);
+    res.status(500).send("Error registering for event");
   }
 });
 
-
 // Start server on port 3000
-app.listen(3000,function(){
-    console.log(`Server running at http://127.0.0.1:3000/`);
+app.listen(3000, function () {
+  console.log(`Server running at http://127.0.0.1:3000/`);
 });
-

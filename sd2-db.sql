@@ -64,3 +64,30 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+--
+
+CREATE TABLE events (
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(512) NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  date DATE NOT NULL,
+  difficulty_level ENUM('Beginner', 'Intermediate', 'Advanced') NOT NULL,
+  pace_group_casual VARCHAR(50),
+  pace_group_competitive VARCHAR(50),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE registrations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_name VARCHAR(255) NOT NULL,
+  user_email VARCHAR(255) NOT NULL,
+  event_id INT NOT NULL,
+  FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+);
+
+-- Insert test event data
+INSERT INTO events (name, start_time, end_time, date, difficulty_level, pace_group_casual, pace_group_competitive) 
+VALUES ('Sunday Morning 5K Run', '07:00:00', '09:30:00', '2024-07-04', 'Intermediate', '7 min/km', '5 min/km');
