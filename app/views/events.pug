@@ -1,8 +1,9 @@
+doctype html
 html(lang="en")
   head
-    title About PulsePals - PulsePals
+    title Events - PulsePals
     style
-        include ./assets/events.css
+      include ./assets/events.css
   body
     nav
       .container
@@ -21,80 +22,67 @@ html(lang="en")
         .right
           a(href="#") sign in
           a(href="#", class="btn btn-primary") register
+   
+    aside.events-menu
+        ul
+          li 
+            a(href="#") All Events
+          li 
+            a(href="#") Upcoming Events
+          li
+            a(href="#") Past Events
+          li
+            a(href="#") Event Guidelines   
+
     main
       .left
-        .content
-          h1 Stronger Together, One Pulse at a Time.
-          .cta
-            a(href="/about", class="btn btn-primary") Learn more !!
-            a(href="#", class="btn") Meetups
-      .right
-        .outer-circle
-          .inner-circle
-          .person
-            img(src="/images/GettyImages-1155448643.jpg", alt="person img")
     section#big-boxes
       .big-boxes__container
         .big-box
-          img(src="/images/644bf64efcc0d60bf0759328_IMG_3685-1.jpeg", alt="Your Progress")
+          img(src="/images/644bf64efcc0d60bf0759328_IMG_3685-1.jpeg", alt="Running")
           a(href="#")
-            h3 Your Progress
-          p Track your fitness journey and see your achievements.
+            h3 Running
+          p Running isn't just exercise—it’s freedom, energy, and a step toward a healthier you. Lace up and hit the road! 🏃‍♂️🔥
         .big-box
-          img(src="/images/istockphoto-1319764741-612x612.jpg", alt="Referring a Friend")
+          img(src="/images/GettyImages-1155448643.jpg", alt="Cycling")
           a(href="#")
-            h3 Referring a Friend
-          p Invite friends to join PulsePals and earn rewards.
-        .big-box
-          img(src="/images/feature-picture-7-1170x600.jpg", alt="Upcoming Meetups")
-          a(href="#")
-            h3 Upcoming Meetups
-          p Explore curated workouts, routes, and tips.
-        .big-box
-          img(src="/images/Screen_Shot_2014-04-29_at_11.34.22_AM.jpg", alt="Popular Routes Near You")
-          a(href="#")
-            h3 Popular Routes Near You
-          p Discover the best running and cycling routes in your area.
+            h3 Cycling
+          p Cycling boosts your body, clears your mind, and takes you places—one turn at a time. 🚴‍♂️💨
+   
+      .right 
     section#testimonials
-      h1 Testimonials
-      p.lead See what our community has to say about PulsePals!
-      .testimonials__container
-        article.testimonial
-          p "PulsePals helped me find the perfect running partner! I used to struggle with motivation, but now I have someone to push me every step of the way."
-          .testimonial__client
-            .avatar
-              img(src="./images/avatar1.jpg")
-            .testimonial__work
-              p
-                b Diana Ayi
-              small Fitness Enthusiast
-        article.testimonial
-          p "As a beginner, I was nervous about starting my fitness journey. PulsePals connected me with an experienced partner who guided me through my first 5K!"
-          .testimonial__client
-            .avatar
-              img(src="./images/avatar2.jpg")
-            .testimonial__work
-              p
-                b Ernest Achiever
-              small New Runner
-        article.testimonial
-          p "I love the PulsePals community! The meetups and challenges keep me accountable, and I've made some amazing friends along the way."
-          .testimonial__client
-            .avatar
-              img(src="./images/avatar3.jpg")
-            .testimonial__work
-              p
-                b Asamoah Gyan
-              small Cyclist
-        article.testimonial
-          p "I struggled to stay consistent with my workouts until I joined PulsePals. Having a partner makes all the difference. Highly recommended!"
-          .testimonial__client
-            .avatar
-              img(src="./images/avatar4.jpg")
-            .testimonial__work
-              p
-                b Beatrice Aku
-              small Gym Enthusiast
+      h1 Featured Events
+      h2 Sunday Morning 5K Run
+          ul
+            li 📅 Date & Time: Sunday, July 4th, 8:00 AM
+            li 📍 Location: Finsbury, London
+            li 🏃 Event Type: Running
+          h3 About the Event
+          p Join us for a scenic 5K run through Central Park! Whether you're a beginner or an experienced runner, this event is for everyone.
+          ul
+            li Level: Intermediate
+            li Route: 5K loop through scenic paths
+            li Theme: Charity Run - Supporting Local Health Initiatives
+            li Goal: Improve endurance, meet fellow runners, and enjoy a beautiful morning workout
+
+          h3 Event Schedule
+          ul
+            li 7:00 AM – Check-in & Warm-up
+            li 8:00 AM – Race Begins
+            li 9:30 AM – Cool-down & Group Meet-up
+
+          h3 Difficulty Level
+          p Suitable for intermediate runners
+          ul
+            li Pace Groups Available: Casual Runners (~7 min/km), Competitive Runners (5 min/km)
+
+          h3 Event Guidelines
+          ul
+            li Follow safety protocols & stay on the designated route
+            li Water stations available at 2.0K & 4.0K marks
+            li Event will be rescheduled in case of severe weather
+
+
     footer
       .container
         div
