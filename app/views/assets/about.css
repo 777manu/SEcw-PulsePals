@@ -23,7 +23,7 @@ nav {
   place-items: center;
 }
 
-nav .container1 {
+nav .container {
   width: 86%;
   display: flex;
   justify-content: space-between;
@@ -31,7 +31,7 @@ nav .container1 {
 }
 
 a {
-  color: #ffffff;
+  color: #fff;
   transition: all 300ms ease;
 }
 
@@ -41,7 +41,6 @@ a:hover {
 
 nav h2 {
   color: #ff4800;
-  padding-top: 0rem;
 }
 
 nav ul {
@@ -49,7 +48,7 @@ nav ul {
   gap: 2rem;
 }
 
-nav .right1 {
+nav .right {
   display: flex;
   align-items: center;
   gap: 2rem;
@@ -75,8 +74,13 @@ nav .right1 {
   background: #000;
 }
 
+h2 {
+  color: #333;
+  text-align: left;
+}
+
 /* Main Content */
-.container {
+.container1 {
   width: 90%;
   max-width: 900px;
   margin: 3rem auto;

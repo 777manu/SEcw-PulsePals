@@ -5,8 +5,8 @@ html(lang="en")
         include ./assets/about.css
   body
     nav
-      .container1
-        h2 PulsePals
+      .container
+        h2 Pulsepals
         ul
           li
             a(href="/") Home
@@ -15,15 +15,19 @@ html(lang="en")
           li
             a(href="/events") Events
           li
-            a(href="#") Partner Matching
+            a(href="#") Partner matching
           li
-            a(href="/report") Safety and Reports
-        .right1
-          a(href="#") Sign In
-          a(href="#", class="btn btn-primary") Register
+            a(href="/report") Safety and reports
+        .right
+          if user
+            a(href="/profile")= user.username
+            a(href="/logout", class="btn") Logout
+          else
+            a(href="/login") Sign in
+            a(href="/signup", class="btn btn-primary") Register
     
     main
-      .container
+      .container1
         h1 PulsePals - Find Your Perfect Running & Cycling Buddy
         p.intro Welcome to PulsePals, the ultimate platform for runners and cyclists looking to connect with like-minded individuals. Whether you're training for a marathon, exploring new cycling routes, or simply looking for an accountability partner, PulsePals helps you find the perfect match for your fitness goals.
         

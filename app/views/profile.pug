@@ -1,0 +1,87 @@
+doctype html
+html(lang="en")
+  head
+    title #{user.firstName}'s Profile - PulsePals
+    style
+      include ./assets/profile.css
+  body
+    nav
+      .container
+        h2 Pulsepals
+        ul
+          li
+            a(href="/" style="text-decoration: none;") Home
+          li
+            a(href="/about" style="text-decoration: none;") About
+          li
+            a(href="/events" style="text-decoration: none;") Events
+          li
+            a(href="#" style="text-decoration: none;") Partner matching
+          li
+            a(href="/report" style="text-decoration: none;") Safety and reports
+        .right
+          a(href="/profile" style="text-decoration: none;" ) My Profile
+          a(href="/logout" style="text-decoration: none;," class="btn btn-primary") Logout
+
+    .profile-container
+      .profile-header
+        .avatar
+          img(src=user.avatar || "/images/default-avatar.jpg", alt="Profile Picture")
+        .profile-info
+          h1 #{user.firstName} #{user.lastName}
+          p @#{user.username}
+          p #{user.bio || 'No bio yet'}
+          .profile-stats
+            .stat
+              h3 #{user.friendsCount || 0}
+              p Friends
+            .stat
+              h3 #{user.activitiesCount || 0}
+              p Activities
+
+      .profile-content
+        .profile-sidebar
+          .profile-details
+            h2 About
+            .detail-item
+              h4 Email
+              p #{user.email}
+            .detail-item
+              h4 Fitness Level
+              p #{user.fitnessLevel || 'Not specified'}
+            .detail-item
+              h4 Interests
+              p #{user.interests || 'None specified'}
+            .detail-item
+              h5 Member Since
+              p #{new Date(user.createdAt).toLocaleDateString()}
+          a(href="/profile/edit", class="btn") Edit Profile
+
+        .profile-main
+          .section
+            h2 Recent Activities
+            if activities && activities.length > 0
+              each activity in activities
+                .activity-item
+                  .activity-icon
+                    i(class=activity.icon)
+                  .activity-info
+                    h3 #{activity.title}
+                    p #{activity.description}
+                  .activity-date #{new Date(activity.date).toLocaleDateString()}
+            else
+              p No recent activities
+
+          .section
+            h2 Upcoming Events
+            if events && events.length > 0
+              each event in events
+                .activity-item
+                  .activity-icon
+                    i(class="fas fa-calendar-alt")
+                  .activity-info
+                    h3 #{event.name}
+                    p #{event.location} - #{new Date(event.date).toLocaleDateString()}
+                  .activity-date In #{event.daysUntil} days
+            else
+              p No upcoming events

@@ -1,0 +1,42 @@
+doctype html
+html(lang="en")
+  head
+    title Users - PulsePals
+    style
+      include ./assets/users.css
+  body
+    nav
+      .container
+        h2 Pulsepals
+        ul
+          li
+            a(href="/") Home
+          li
+            a(href="/about") About
+          li
+            a(href="/events") Events
+          li
+            a(href="#") Partner matching
+          li
+            a(href="/report") Safety and reports
+        .right
+          a(href="/profile") My Profile
+          a(href="/logout", class="btn btn-primary") Logout
+
+    .users-container
+      h1 Connect with Friends
+      .users-grid
+        each user in users
+          .user-card
+            .user-avatar
+              img(src=user.avatar || "/images/default-avatar.jpg", alt=user.username)
+            .user-info
+              h3 #{user.firstName} #{user.lastName}
+              p @#{user.username}
+              .user-stats
+                .stat
+                  span #{user.friendsCount}
+                  | Friends
+              .user-actions
+                a(href=`/profile/${user.id}`, class="btn btn-view") View Profile
+                button(class="btn btn-add-friend") Add Friend

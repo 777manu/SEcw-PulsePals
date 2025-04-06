@@ -20,8 +20,12 @@ html(lang="en")
           li
             a(href="/report") Safety and reports
         .right
-          a(href="#") sign in
-          a(href="#", class="btn btn-primary") register
+          if user
+            a(href="/profile")= user.username
+            a(href="/logout", class="btn") Logout
+          else
+            a(href="/login") Sign in
+            a(href="/signup", class="btn btn-primary") Register
     main
       .left
         .content
@@ -38,7 +42,7 @@ html(lang="en")
       .big-boxes__container
         .big-box
           img(src="/images/644bf64efcc0d60bf0759328_IMG_3685-1.jpeg", alt="Your Progress")
-          a(href="#")
+          a(href="/profile")
             h3 Your Progress
           p Track your fitness journey and see your achievements.
         .big-box

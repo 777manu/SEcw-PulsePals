@@ -7,7 +7,7 @@ html(lang="en")
   body
     nav
       .container
-        h2 PulsePals
+        h2 Pulsepals
         ul
           li
             a(href="/") Home
@@ -16,12 +16,16 @@ html(lang="en")
           li
             a(href="/events") Events
           li
-            a(href="#") Partner Matching
+            a(href="#") Partner matching
           li
-            a(href="/report") Safety and Reports
+            a(href="/report") Safety and reports
         .right
-          a(href="#") Sign In
-          a(href="#", class="btn btn-primary") Register
+          if user
+            a(href="/profile")= user.username
+            a(href="/logout", class="btn") Logout
+          else
+            a(href="/login") Sign in
+            a(href="/signup", class="btn btn-primary") Register
 
     aside.events-menu
       ul

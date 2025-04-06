@@ -1,0 +1,88 @@
+.signup-container {
+  max-width: 600px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.signup-container h1 {
+  color: #ff4800;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #ff4800;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 72, 0, 0.2);
+}
+
+.signup-container .btn {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background: #ff4800;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.signup-container .btn:hover {
+  background: #e04100;
+}
+
+.links {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.links a {
+  color: #ff4800;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+.error {
+  color: #ff3333;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}

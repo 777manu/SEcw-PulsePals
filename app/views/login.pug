@@ -1,0 +1,42 @@
+doctype html
+html(lang="en")
+  head
+    title Login - PulsePals
+    style
+      include ./assets/login.css
+  body
+    nav
+      .container
+        h2 Pulsepals
+        ul
+          li
+            a(href="/") Home
+          li
+            a(href="/about") About
+          li
+            a(href="/events") Events
+          li
+            a(href="#") Partner matching
+          li
+            a(href="/report") Safety and reports
+        .right
+          a(href="/login") Sign in
+          a(href="/signup", class="btn btn-primary") Register
+          
+    .login-container
+      h1 Welcome Back!
+      if error
+        p.error= error
+      form(action="/login", method="POST")
+        .form-group
+          label(for="email") Email
+          input(type="email", id="email", name="email", required)
+        .form-group
+          label(for="password") Password
+          input(type="password", id="password", name="password", required)
+        button(type="submit", class="btn") Login
+      .links
+        p Don't have an account? 
+          a(href="/signup") Sign up
+        p
+          a(href="#") Forgot password?

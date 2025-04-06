@@ -5,7 +5,7 @@ html(lang="en")
         include ./assets/reports.css
   body
     nav
-      .container1
+      .container
         h2 PulsePals
         ul
           li
@@ -18,12 +18,16 @@ html(lang="en")
             a(href="#") Partner matching
           li
             a(href="/report") Safety and reports
-        .right1
-          a(href="#") sign in
-          a(href="#", class="btn btn-primary") register
+        .right
+          if user
+            a(href="/profile")= user.username
+            a(href="/logout", class="btn") Logout
+          else
+            a(href="/login") Sign in
+            a(href="/signup", class="btn btn-primary") Register
 
     main
-      .container
+      .container1
         h1 Code of Conduct
         .code-of-conduct
           p At PulsePals, we are committed to fostering a welcoming, inclusive, and respectful community for all members. Whether you're joining us for running, cycling, or any other activity, we expect everyone to adhere to the following guidelines to ensure a positive and safe experience for all.
@@ -118,3 +122,15 @@ html(lang="en")
               a(href="#") Terms of Service
             li
               a(href="#") Cookie Policy
+
+script.
+  const urlParams = new URLSearchParams(window.location.search);
+  const successMsg = urlParams.get('success');
+  const errorMsg = urlParams.get('error');
+
+  if (successMsg) {
+    alert(successMsg); // Or display in a <div>
+  }
+  if (errorMsg) {
+    alert(errorMsg);
+  }

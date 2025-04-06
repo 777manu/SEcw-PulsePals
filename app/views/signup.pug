@@ -1,0 +1,62 @@
+doctype html
+html(lang="en")
+  head
+    title Sign Up - PulsePals
+    style
+      include ./assets/homepage.css
+    style
+      include ./assets/signup.css
+  body
+    nav
+      .container
+        h2 Pulsepals
+        ul
+          li
+            a(href="/") Home
+          li
+            a(href="/about") About
+          li
+            a(href="/events") Events
+          li
+            a(href="#") Partner matching
+          li
+            a(href="/report") Safety and reports
+        .right
+          a(href="/login") Sign in
+          a(href="/signup", class="btn btn-primary") Register
+
+    .signup-container
+      h1 Join PulsePals Today!
+      if error
+        p.error= error
+      form(action="/signup", method="POST")
+        .form-row
+          .form-group
+            label(for="firstName") First Name
+            input(type="text", id="firstName", name="firstName", required)
+          .form-group
+            label(for="lastName") Last Name
+            input(type="text", id="lastName", name="lastName", required)
+        .form-group
+          label(for="email") Email
+          input(type="email", id="email", name="email", required)
+        .form-group
+          label(for="password") Password
+          input(type="password", id="password", name="password", required)
+        .form-group
+          label(for="confirmPassword") Confirm Password
+          input(type="password", id="confirmPassword", name="confirmPassword", required)
+        .form-group
+          label(for="fitnessLevel") Fitness Level
+          select(id="fitnessLevel", name="fitnessLevel", required)
+            option(value="") Select your fitness level
+            option(value="beginner") Beginner
+            option(value="intermediate") Intermediate
+            option(value="advanced") Advanced
+        .form-group
+          label(for="interests") Interests (comma separated)
+          input(type="text", id="interests", name="interests", placeholder="e.g. running, cycling, yoga")
+        button(type="submit", class="btn") Create Account
+      .links
+        p Already have an account?
+          a(href="/login") Log in
