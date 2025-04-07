@@ -53,7 +53,7 @@ html(lang="en")
                 .user-stats
                   .stat
                     span.count #{user.friendsCount || 0}
-                    span.label  Friends
+                    span.label Friends
                 .user-actions
                   a(href=`/profile/${user.id}`, class="btn btn-view") View Profile
                   if currentUser && currentUser.id !== user.id

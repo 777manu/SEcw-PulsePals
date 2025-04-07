@@ -29,12 +29,10 @@
   a {
     color: #fff;
     transition: all 300ms ease;
-    text-decoration: none; 
   }
   
   a:hover {
     color: #ff4800;
-    text-decoration: none; 
   }
   
   nav h2 {

@@ -18,98 +18,11 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `sd2-db`
---
+-- Database: `pulsepals`
 
--- --------------------------------------------------------
-
---
--- Table structure for table `events`
---
-
-CREATE TABLE `events` (
-  `id` int NOT NULL,
-  `name` varchar(512) NOT NULL,
-  `start_time` time NOT NULL,
-  `end_time` time NOT NULL,
-  `date` date NOT NULL,
-  `difficulty_level` enum('Beginner','Intermediate','Advanced') NOT NULL,
-  `pace_group_casual` varchar(50) DEFAULT NULL,
-  `pace_group_competitive` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `events`
---
-
-INSERT INTO `events` (`id`, `name`, `start_time`, `end_time`, `date`, `difficulty_level`, `pace_group_casual`, `pace_group_competitive`) VALUES
-(1, 'Sunday Morning 5K Run', '07:00:00', '09:30:00', '2024-07-04', 'Intermediate', '7 min/km', '5 min/km');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `friends`
---
-
-CREATE TABLE `friends` (
-  `user_id` int NOT NULL,
-  `friend_id` int NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `registrations`
---
-
-CREATE TABLE `registrations` (
-  `id` int NOT NULL,
-  `user_name` varchar(255) NOT NULL,
-  `user_email` varchar(255) NOT NULL,
-  `event_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `registrations`
---
-
-INSERT INTO `registrations` (`id`, `user_name`, `user_email`, `event_id`) VALUES
-(7, 'emmanuel', '333bladeefan2001@gmail.com', 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `reports`
---
-
-CREATE TABLE `reports` (
-  `id` int NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `report` text NOT NULL,
-  `submitted_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `reports`
---
-
-INSERT INTO `reports` (`id`, `name`, `phone`, `report`, `submitted_at`) VALUES
-(1, 'buh', '+44 7545 698142', 'sef', '2025-04-06 00:53:45'),
-(2, 'buhd', '+44 7545 698132', 'sef', '2025-04-06 00:54:53'),
-(3, 'buhd', '+44 7545 698132', 'sef', '2025-04-06 00:55:08'),
-(4, 'Daniel jerges', '+44 7545 6981432', 'adwa', '2025-04-06 00:56:00'),
-(5, 'Daniel jerges', '07545698132', 'we', '2025-04-06 01:00:06');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
-CREATE TABLE `users` (
-  `id` int NOT NULL,
+-- Table structure for users
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
@@ -119,104 +32,140 @@ CREATE TABLE `users` (
   `bio` text,
   `fitnessLevel` enum('beginner','intermediate','advanced') DEFAULT NULL,
   `interests` varchar(255) DEFAULT NULL,
-  `followers` int DEFAULT '0',
-  `following` int DEFAULT '0',
-  `activities` int DEFAULT '0',
   `createdAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `activitiesCount` int DEFAULT '0'
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `users`
---
+-- Table structure for events
+CREATE TABLE IF NOT EXISTS `events` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `location` varchar(255) NOT NULL,
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL,
+  `date` date NOT NULL,
+  `difficulty_level` enum('Beginner','Intermediate','Advanced') NOT NULL,
+  `pace_group_casual` varchar(50) DEFAULT NULL,
+  `pace_group_competitive` varchar(50) DEFAULT NULL,
+  `max_participants` int DEFAULT NULL,
+  `createdAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `users` (`id`, `firstName`, `lastName`, `email`, `password`, `username`, `avatar`, `bio`, `fitnessLevel`, `interests`, `followers`, `following`, `activities`, `createdAt`, `updatedAt`, `activitiesCount`) VALUES
-(1, 'Emmanuel', 'Alase', '333bladeefan2001@gmail.com', '$2b$10$awEqNLCmzlBxj9XZ8Xtcz.JlEWwjGvg81.Ka.VEE.tkkbJlueRkb.', 'emmanuelala727', NULL, NULL, 'beginner', 'running', 0, 0, 0, '2025-04-05 22:49:57', '2025-04-05 22:49:57', 0);
+-- Table structure for registrations
+CREATE TABLE IF NOT EXISTS `registrations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `user_email` varchar(100) NOT NULL,
+  `event_id` int NOT NULL,
+  `registered_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `event_id` (`event_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `registrations_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `registrations_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Indexes for dumped tables
---
+-- Table structure for friends
+CREATE TABLE IF NOT EXISTS `friends` (
+  `user_id` int NOT NULL,
+  `friend_id` int NOT NULL,
+  `status` enum('pending','accepted') DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`,`friend_id`),
+  KEY `friend_id` (`friend_id`),
+  CONSTRAINT `friends_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `friends_ibfk_2` FOREIGN KEY (`friend_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Indexes for table `events`
---
-ALTER TABLE `events`
-  ADD PRIMARY KEY (`id`);
+-- Table structure for reports
+CREATE TABLE IF NOT EXISTS `reports` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `reporter_id` int DEFAULT NULL,
+  `reported_user_id` int DEFAULT NULL,
+  `report_type` enum('behavior','safety','content','other') NOT NULL,
+  `description` text NOT NULL,
+  `status` enum('pending','reviewed','resolved') DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `resolved_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `reporter_id` (`reporter_id`),
+  KEY `reported_user_id` (`reported_user_id`),
+  CONSTRAINT `reports_ibfk_1` FOREIGN KEY (`reporter_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `reports_ibfk_2` FOREIGN KEY (`reported_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Indexes for table `friends`
---
-ALTER TABLE `friends`
-  ADD PRIMARY KEY (`user_id`,`friend_id`),
-  ADD KEY `friend_id` (`friend_id`);
+-- Table structure for activities
+CREATE TABLE IF NOT EXISTS `activities` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `activity_type` enum('run','cycle','swim','hike','gym','other') NOT NULL,
+  `distance` decimal(5,2) DEFAULT NULL COMMENT 'in kilometers',
+  `duration` int DEFAULT NULL COMMENT 'in minutes',
+  `calories` int DEFAULT NULL,
+  `notes` text,
+  `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `activities_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Indexes for table `registrations`
---
-ALTER TABLE `registrations`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `event_id` (`event_id`);
+-- Table structure for messages
+CREATE TABLE IF NOT EXISTS `messages` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sender_id` int NOT NULL,
+  `receiver_id` int NOT NULL,
+  `content` text NOT NULL,
+  `is_read` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `sender_id` (`sender_id`),
+  KEY `receiver_id` (`receiver_id`),
+  CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Indexes for table `reports`
---
-ALTER TABLE `reports`
-  ADD PRIMARY KEY (`id`);
+-- Sample data for users
+INSERT INTO `users` (`firstName`, `lastName`, `email`, `password`, `username`, `fitnessLevel`, `interests`, `bio`) VALUES
+('John', 'Doe', 'john@example.com', '$2b$10$awEqNLCmzlBxj9XZ8Xtcz.JlEWwjGvg81.Ka.VEE.tkkbJlueRkb.', 'johndoe123', 'intermediate', 'running,cycling', 'Fitness enthusiast and marathon runner'),
+('Jane', 'Smith', 'jane@example.com', '$2b$10$awEqNLCmzlBxj9XZ8Xtcz.JlEWwjGvg81.Ka.VEE.tkkbJlueRkb.', 'janesmith456', 'beginner', 'yoga,hiking', 'Just starting my fitness journey'),
+('Mike', 'Johnson', 'mike@example.com', '$2b$10$awEqNLCmzlBxj9XZ8Xtcz.JlEWwjGvg81.Ka.VEE.tkkbJlueRkb.', 'mikej', 'advanced', 'weightlifting,running', 'Personal trainer and nutrition coach');
 
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `username` (`username`);
+-- Sample data for events
+INSERT INTO `events` (`name`, `description`, `location`, `start_time`, `end_time`, `date`, `difficulty_level`, `pace_group_casual`, `pace_group_competitive`) VALUES
+('Sunday Morning 5K Run', 'Community run through Central Park', 'Central Park, New York', '07:00:00', '09:30:00', '2024-07-14', 'Intermediate', '7 min/km', '5 min/km'),
+('Cycling Tour', 'Scenic 20km cycling tour', 'Riverside Park', '08:00:00', '11:00:00', '2024-07-21', 'Beginner', '15 km/h', '25 km/h'),
+('Trail Running Challenge', '10km trail running with elevation', 'Mountain View Trail', '06:30:00', '09:00:00', '2024-08-05', 'Advanced', NULL, '6 min/km');
 
---
--- AUTO_INCREMENT for dumped tables
---
+-- Sample data for registrations
+INSERT INTO `registrations` (`user_id`, `user_email`, `event_id`) VALUES
+(1, 'john@example.com', 1),
+(1, 'john@example.com', 2),
+(2, 'jane@example.com', 1),
+(3, 'mike@example.com', 3);
 
---
--- AUTO_INCREMENT for table `events`
---
-ALTER TABLE `events`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+-- Sample data for friends
+INSERT INTO `friends` (`user_id`, `friend_id`, `status`) VALUES
+(1, 2, 'accepted'),
+(1, 3, 'pending'),
+(2, 3, 'accepted');
 
---
--- AUTO_INCREMENT for table `registrations`
---
-ALTER TABLE `registrations`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+-- Sample data for activities
+INSERT INTO `activities` (`user_id`, `activity_type`, `distance`, `duration`, `calories`, `notes`) VALUES
+(1, 'run', 5.20, 28, 420, 'Morning run before work'),
+(1, 'cycle', 15.50, 45, 520, 'Weekend cycling with friends'),
+(2, 'hike', 8.00, 120, 380, 'Nature trail hike'),
+(3, 'gym', NULL, 60, 450, 'Weight training session');
 
---
--- AUTO_INCREMENT for table `reports`
---
-ALTER TABLE `reports`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `friends`
---
-ALTER TABLE `friends`
-  ADD CONSTRAINT `friends_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `friends_ibfk_2` FOREIGN KEY (`friend_id`) REFERENCES `users` (`id`);
-
---
--- Constraints for table `registrations`
---
-ALTER TABLE `registrations`
-  ADD CONSTRAINT `registrations_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`) ON DELETE CASCADE;
-COMMIT;
+-- Sample data for messages
+INSERT INTO `messages` (`sender_id`, `receiver_id`, `content`) VALUES
+(1, 2, 'Hey Jane, want to join me for the Sunday run?'),
+(2, 1, 'Sure John! What time should we meet?'),
+(3, 1, 'Mike here, I can help with your training plan');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

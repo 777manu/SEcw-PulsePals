@@ -1,0 +1,178 @@
+doctype html
+html(lang="en")
+  head
+    title Find a Partner - PulsePals
+    style
+      include ./assets/users.css
+  body
+    nav
+      .container
+        h2 Pulsepals
+        ul
+          li
+            a(href="/") Home
+          li
+            a(href="/about") About
+          li
+            a(href="/events") Events
+          li
+            a(href="/users") Find a Partner
+          li
+            a(href="/report") Safety and reports
+        .right
+          if user
+            a(href="/profile")= user.username
+            a(href="/logout", class="btn") Logout
+          else
+            a(href="/login") Sign in
+            a(href="/signup", class="btn btn-primary") Register
+
+    .users-container
+      h1 Find Your Perfect Fitness Partner
+      
+      .search-filter
+        form(method="get", action="/users")
+          input(type="text", name="search", placeholder="Search by name or interests", value=searchQuery || '')
+          select(name="fitnessLevel")
+            option(value="") All Levels
+            option(value="beginner", selected=fitnessLevelFilter === 'beginner') Beginner
+            option(value="intermediate", selected=fitnessLevelFilter === 'intermediate') Intermediate
+            option(value="advanced", selected=fitnessLevelFilter === 'advanced') Advanced
+          button(type="submit") Find Partners
+      
+      if users && users.length > 0
+        .users-grid
+          each user in users
+            .user-card
+              .user-avatar
+                img(src=user.avatar || '/images/default-avatar.jpg', alt=`${user.firstName}'s avatar`)
+              .user-info
+                h3 #{user.firstName} #{user.lastName}
+                p.username @#{user.username}
+                if user.fitnessLevel
+                  p.fitness-level
+                    span.label Fitness Level: 
+                    span.value(class=user.fitnessLevel) #{user.fitnessLevel.charAt(0).toUpperCase() + user.fitnessLevel.slice(1)}
+                if user.interests
+                  p.interests
+                    span.label Interests: 
+                    span.value #{user.interests}
+                .user-stats
+                  .stat
+                    span.count #{user.friendsCount || 0}
+                    span.label Friends
+                .user-actions
+                  a(href=`/profile/${user.id}`, class="btn btn-view") View Profile
+                  if currentUser && currentUser.id !== user.id
+                    if user.isFriend
+                      button(class="btn btn-remove-friend", data-user-id=user.id) Remove Friend
+                    else if user.friendRequestSent
+                      button(class="btn btn-pending", disabled) Request Sent
+                    else if user.friendRequestReceived
+                      button(class="btn btn-accept", data-user-id=user.id) Accept Request
+                    else
+                      button(class="btn btn-add-friend", data-user-id=user.id) Add Friend
+      else
+        p.no-results No partners found matching your criteria.
+
+    footer
+      .footer-container
+        .footer-section
+          h3 PulsePals
+          ul.footer-links
+            li
+              a(href="/") Home
+            li
+              a(href="/about") About
+            li
+              a(href="/events") Events
+            li
+              a(href="/users") Find a Partner
+        .footer-section
+          h3 Resources
+          ul.footer-links
+            li
+              a(href="/report") Safety Center
+            li
+              a(href="#") Fitness Tips
+            li
+              a(href="#") Route Planner
+        .footer-section
+          h3 Company
+          ul.footer-links
+            li
+              a(href="#") About Us
+            li
+              a(href="#") Careers
+            li
+              a(href="#") Contact
+        .footer-section
+          h3 Connect
+          .social-icons
+            a(href="#", aria-label="Facebook")
+              i.fab.fa-facebook
+            a(href="#", aria-label="Twitter")
+              i.fab.fa-twitter
+            a(href="#", aria-label="Instagram")
+              i.fab.fa-instagram
+      .footer-bottom
+        p &copy; #{new Date().getFullYear()} PulsePals. All rights reserved.
+
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        // Handle all friend actions with a single function
+        async function handleFriendAction(endpoint, method, button) {
+          const originalText = button.textContent;
+          button.disabled = true;
+          button.textContent = 'Processing...';
+          
+          try {
+            const response = await fetch(endpoint, {
+              method: method,
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              credentials: 'same-origin'
+            });
+            
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.error || 'Request failed');
+            }
+            
+            // Refresh the page to show updated status
+            window.location.reload();
+          } catch (error) {
+            console.error('Error:', error);
+            alert(error.message);
+            button.disabled = false;
+            button.textContent = originalText;
+          }
+        }
+
+        // Add friend button
+        document.querySelectorAll('.btn-add-friend').forEach(button => {
+          button.addEventListener('click', function() {
+            const userId = this.dataset.userId;
+            handleFriendAction(`/users/${userId}/friend`, 'POST', this);
+          });
+        });
+
+        // Accept friend request button
+        document.querySelectorAll('.btn-accept').forEach(button => {
+          button.addEventListener('click', function() {
+            const userId = this.dataset.userId;
+            handleFriendAction(`/users/${userId}/friend/accept`, 'POST', this);
+          });
+        });
+
+        // Remove friend button
+        document.querySelectorAll('.btn-remove-friend').forEach(button => {
+          button.addEventListener('click', function() {
+            if (confirm('Are you sure you want to remove this friend?')) {
+              const userId = this.dataset.userId;
+              handleFriendAction(`/users/${userId}/friend`, 'DELETE', this);
+            }
+          });
+        });
+      });

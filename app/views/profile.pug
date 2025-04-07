@@ -16,7 +16,7 @@ html(lang="en")
           li
             a(href="/events" style="text-decoration: none;") Events
           li
-            a(href="#" style="text-decoration: none;") Partner matching
+            a(href="/users" style="text-decoration: none;") Find a Partner
           li
             a(href="/report" style="text-decoration: none;") Safety and reports
         .right
@@ -36,11 +36,11 @@ html(lang="en")
           p #{user.bio || 'No bio yet'}
           .profile-stats
             .stat
-              h3 #{user.friendsCount || 0}
-              p Friends
-            .stat
               h3 #{user.activitiesCount || 0}
               p Activities
+            .stat
+              h3 #{friends.length}
+              p Friends
 
       .profile-content
         .profile-sidebar
@@ -51,21 +51,33 @@ html(lang="en")
               p #{user.email}
             .detail-item
               h4 Fitness Level
-              p #{user.fitnessLevel || 'Not specified'}
+              p #{user.fitnessLevel ? user.fitnessLevel.charAt(0).toUpperCase() + user.fitnessLevel.slice(1) : 'Not specified'}
             .detail-item
               h4 Interests
               p #{user.interests || 'None specified'}
             .detail-item
               h5 Member Since
               p #{new Date(user.createdAt).toLocaleDateString()}
+
+          .profile-friends
+            h2 Friends (#{friends.length})
+            if friends.length > 0
+              .friends-list
+                each friend in friends
+                  .friend-item
+                    a(href=`/profile/${friend.id}`)
+                      img(src=friend.avatar, alt=friend.firstName)
+                      span #{friend.firstName} #{friend.lastName}
+            else
+              p.no-friends You haven't added any friends yet.
+
           .profile-actions
-            h2 Update Profile Picture
+            h2 Update Profile
             form(action="/upload-avatar", method="POST", enctype="multipart/form-data")
               .form-group
-                label(for="avatar") Choose a new profile picture:
+                label(for="avatar") Profile Picture:
                 input(type="file", name="avatar", id="avatar", accept="image/*")
               button(type="submit", class="btn btn-primary") Update Picture
-          a(href="/profile/edit", class="btn") Edit Profile
 
         .profile-main
           .section
@@ -80,18 +92,91 @@ html(lang="en")
                     p #{activity.description}
                   .activity-date #{new Date(activity.date).toLocaleDateString()}
             else
-              p No recent activities
+              p.no-activities No recent activities. Get moving!
 
           .section
-            h2 Upcoming Events
+            h2 Your Registered Events
             if events && events.length > 0
-              each event in events
-                .activity-item
-                  .activity-icon
-                    i(class="fas fa-calendar-alt")
-                  .activity-info
-                    h3 #{event.name}
-                    p #{event.location} - #{new Date(event.date).toLocaleDateString()}
-                  .activity-date In #{event.daysUntil} days
+              .events-list
+                each event in events
+                  .event-card
+                    .event-header
+                      h3= event.name
+                      .event-date
+                        i.fas.fa-calendar-alt
+                        span= event.formattedDate
+                        if event.daysUntil > 0
+                          span.days-away (#{event.daysUntil} days away)
+                        else
+                          span.today (Today!)
+                    .event-details
+                      p
+                        i.fas.fa-map-marker-alt
+                        span= event.location
+                      p
+                        i.fas.fa-clock
+                        span #{event.start_time} - #{event.end_time}
+                      p
+                        i.fas.fa-tachometer-alt
+                        span Difficulty: #{event.difficulty_level}
+                      if event.pace_group_casual || event.pace_group_competitive
+                        p
+                          i.fas.fa-running
+                          span Pace Groups: 
+                          if event.pace_group_casual
+                            span Casual: #{event.pace_group_casual}
+                          if event.pace_group_competitive
+                            span Competitive: #{event.pace_group_competitive}
             else
-              p No upcoming events
+              p.no-events You haven't registered for any events yet.
+              a.btn.btn-primary(href="/events") Browse Events
+
+    footer
+      .container
+        div
+          h3 PulsePals
+          ul
+            li
+              a(href="/") Home
+            li
+              a(href="/about") About
+            li
+              a(href="/events") Events
+            li
+              a(href="/users") Find a Partner
+            li
+              a(href="/report") Safety and Reports
+        div
+          h3 Contact Us
+          .contact-info
+            p Email: info@pulsepals.com
+            p Phone: +1 (123) 456-7890
+            p Address: 123 Fitness St, Health City, HC 12345
+        div
+          h3 Follow Us
+          ul
+            li
+              a(href="#") Facebook
+            li
+              a(href="#") Twitter
+            li
+              a(href="#") Instagram
+            li
+              a(href="#") Github
+        div
+          h3 Legal
+          ul
+            li
+              a(href="#") Privacy Policy
+            li
+              a(href="#") Terms of Service
+            li
+              a(href="#") Cookie Policy
+
+    script.
+      // Simple confirmation for avatar upload
+      document.querySelector('form[action="/upload-avatar"]').addEventListener('submit', function(e) {
+        if (!confirm('Are you sure you want to update your profile picture?')) {
+          e.preventDefault();
+        }
+      });

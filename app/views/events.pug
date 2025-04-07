@@ -16,90 +16,63 @@ html(lang="en")
           li
             a(href="/events") Events
           li
-            a(href="#") Partner matching
+            a(href="/users") Find a Partner
           li
             a(href="/report") Safety and reports
         .right
           if user
             a(href="/profile")= user.username
-            a(href="/logout", class="btn") Logout
+            a(href="/logout", class="btn btn-primary") Logout
           else
             a(href="/login") Sign in
             a(href="/signup", class="btn btn-primary") Register
 
-    aside.events-menu
-      ul
-        li 
-          a(href="#") All Events
-        li 
-          a(href="#") Upcoming Events
-        li
-          a(href="#") Past Events
-        li
-          a(href="#") Event Guidelines   
-
     main
-      .left
-        section#big-boxes
-          .big-boxes__container
-            .big-box
-              img(src="/images/644bf64efcc0d60bf0759328_IMG_3685-1.jpeg", alt="Running")
-              a(href="#")
-                h3 Running
-              p Running isn't just exercise—it’s freedom, energy, and a step toward a healthier you. Lace up and hit the road! 🏃‍♂️🔥
-              form(action="/register-event", method="POST")
-                input(type="hidden", name="event_id", value="1") 
-                label(for="user_name") Name:
-                input(type="text", name="user_name", required)
-                label(for="user_email") Email:
-                input(type="email", name="user_email", required)
-                button(type="submit", class="btn btn-primary") Sign Up
+      .events-filter
+        form(method="get", action="/events")
+          select(name="difficulty")
+            option(value="") All Levels
+            option(value="Beginner", selected=difficultyFilter === 'Beginner') Beginner
+            option(value="Intermediate", selected=difficultyFilter === 'Intermediate') Intermediate
+            option(value="Advanced", selected=difficultyFilter === 'Advanced') Advanced
+          button(type="submit") Filter Events
 
-            .big-box
-              img(src="/images/GettyImages-1155448643.jpg", alt="Cycling")
-              a(href="#")
-                h3 Cycling
-              p Cycling boosts your body, clears your mind, and takes you places—one turn at a time. 🚴‍♂️💨
-              form(action="/register-event", method="POST")
-                input(type="hidden", name="event_id", value="2") 
-                label(for="user_name") Name:
-                input(type="text", name="user_name", required)
-                label(for="user_email") Email:
-                input(type="email", name="user_email", required)
-                button(type="submit", class="btn btn-primary") Sign Up
-
-      .right
-        section#featuredevents
-          h1 Featured Events
-          h2 Sunday Morning 5K Run
-          ul
-            li 📅 Date & Time: Sunday, July 4th, 8:00 AM
-            li 📍 Location: Finsbury Park, London
-            li 🏃 Event Type: Running
-          h3 About the Event
-          p Join us for a scenic 5K run through Central Park! Whether you're a beginner or an experienced runner, this event is for everyone.
-            li Level: Intermediate
-            li Route: 5K loop through scenic paths
-            li Theme: Charity Run - Supporting Local Health Initiatives
-            li Goal: Improve endurance, meet fellow runners, and enjoy a beautiful morning workout
-
-          h3 Event Schedule
-          ul
-            li 7:00 AM – Check-in & Warm-up
-            li 8:00 AM – Race Begins
-            li 9:30 AM – Cool-down & Group Meet-up
-
-          h3 Difficulty Level
-          p Suitable for intermediate runners
-          ul
-            li Pace Groups Available: Casual Runners (~7 min/km), Competitive Runners (5 min/km)
-
-          h3 Event Guidelines
-          ul
-            li Follow safety protocols & stay on the designated route
-            li Water stations available at 2.0K & 4.0K marks
-            li Event will be rescheduled in case of severe weather
-
+      .events-container
+        if events.length > 0
+          each event in events
+            .event-card
+              .event-date
+                span.month #{new Date(event.date).toLocaleString('default', { month: 'short' })}
+                span.day #{new Date(event.date).getDate()}
+              .event-info
+                h3 #{event.name}
+                p.location
+                  i.fas.fa-map-marker-alt
+                  | #{event.location}
+                p.time
+                  i.fas.fa-clock
+                  | #{event.start_time} - #{event.end_time}
+                p.difficulty(class=event.difficulty_level.toLowerCase())
+                  | #{event.difficulty_level}
+                if event.pace_group_casual || event.pace_group_competitive
+                  p.pace-groups
+                    i.fas.fa-running
+                    if event.pace_group_casual
+                      span Casual: #{event.pace_group_casual}
+                    if event.pace_group_competitive
+                      span Competitive: #{event.pace_group_competitive}
+                p.description #{event.description}
+                if user
+                  if event.registered
+                    button.registered-btn Already Registered
+                  else
+                    form(action="/register-event", method="POST")
+                      input(type="hidden", name="event_id", value=event.id)
+                      button(type="submit", class="register-btn") Register Now
+                else
+                  a(href="/login", class="register-btn") Login to Register
+        else
+          p.no-events No events found matching your criteria.
 
     footer
       .container
@@ -111,9 +84,9 @@ html(lang="en")
             li
               a(href="/about") About
             li
-              a(href="#") Events
+              a(href="/events") Events
             li
-              a(href="#") Partner Matching
+              a(href="/users") Find a Partner
             li
               a(href="/report") Safety and Reports
         div
@@ -132,7 +105,7 @@ html(lang="en")
             li
               a(href="#") Instagram
             li
-              a(href="#") Github 
+              a(href="#") Github
         div
           h3 Legal
           ul

@@ -19,6 +19,10 @@ html(lang="en")
             a(href="/users") Find a Partner
           li
             a(href="/report") Safety and reports
+        .right
+          if user
+            a(href="/profile")= user.username
+            a(href="/logout", class="btn btn-primary") Logout
 
     .users-container
       h1 Find Your Perfect Fitness Partner
@@ -53,7 +57,7 @@ html(lang="en")
                 .user-stats
                   .stat
                     span.count #{user.friendsCount || 0}
-                    span.label  Friends
+                    span.label Friends
                 .user-actions
                   a(href=`/profile/${user.id}`, class="btn btn-view") View Profile
                   if currentUser && currentUser.id !== user.id
