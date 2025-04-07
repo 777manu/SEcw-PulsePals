@@ -18,7 +18,7 @@ html(lang="en")
           li
             a(href="/events") Events
           li
-            a(href="#") Partner matching
+            a(href="/partner-matching") Partner matching
           li
             a(href="/report") Safety and reports
         .right
@@ -28,8 +28,9 @@ html(lang="en")
     .signup-container
       h1 Join PulsePals Today!
       if error
-        p.error= error
-      form(action="/signup", method="POST")
+        .error-message
+          p= error
+      form(action="/signup", method="POST" enctype="multipart/form-data")
         .form-row
           .form-group
             label(for="firstName") First Name
@@ -47,6 +48,13 @@ html(lang="en")
           label(for="confirmPassword") Confirm Password
           input(type="password", id="confirmPassword", name="confirmPassword", required)
         .form-group
+          label Profile Picture
+          .avatar-upload
+            .avatar-preview(id="avatarPreview")
+              img(src="/images/default-avatar.jpg", id="avatarPreviewImage")
+            label(for="profilePic") Choose Image
+            input(type="file", id="profilePic", name="profilePic", accept="image/*", onchange="previewImage(this)")
+        .form-group
           label(for="fitnessLevel") Fitness Level
           select(id="fitnessLevel", name="fitnessLevel", required)
             option(value="") Select your fitness level
@@ -60,3 +68,21 @@ html(lang="en")
       .links
         p Already have an account?
           a(href="/login") Log in
+
+    script.
+      function previewImage(input) {
+        const preview = document.getElementById('avatarPreviewImage');
+        const file = input.files[0];
+        const reader = new FileReader();
+       
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        }
+       
+        if (file) {
+          reader.readAsDataURL(file);
+        } else {
+          preview.src = "/images/default-avatar.jpg";
+        }
+      }

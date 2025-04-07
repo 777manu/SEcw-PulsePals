@@ -26,7 +26,10 @@ html(lang="en")
     .profile-container
       .profile-header
         .avatar
-          img(src=user.avatar || "/images/default-avatar.jpg", alt="Profile Picture")
+          if user.avatar
+            img(src=user.avatar, alt="Profile Picture")
+          else
+            img(src="/images/default-avatar.jpg", alt="Profile Picture")
         .profile-info
           h1 #{user.firstName} #{user.lastName}
           p @#{user.username}
@@ -55,6 +58,13 @@ html(lang="en")
             .detail-item
               h5 Member Since
               p #{new Date(user.createdAt).toLocaleDateString()}
+          .profile-actions
+            h2 Update Profile Picture
+            form(action="/upload-avatar", method="POST", enctype="multipart/form-data")
+              .form-group
+                label(for="avatar") Choose a new profile picture:
+                input(type="file", name="avatar", id="avatar", accept="image/*")
+              button(type="submit", class="btn btn-primary") Update Picture
           a(href="/profile/edit", class="btn") Edit Profile
 
         .profile-main

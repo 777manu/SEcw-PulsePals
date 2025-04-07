@@ -6,6 +6,7 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const db = require("./services/db");
 const User = require("./models/user");
+const fs = require('fs');
 
 const app = express();
 const port = 3000;
@@ -13,7 +14,8 @@ const port = 3000;
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'))); 
 app.use(session({
   secret: 'your-secret-key',
   resave: false,
@@ -32,6 +34,37 @@ const requireLogin = (req, res, next) => {
   }
   next();
 };
+
+// Multer configuration 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = path.join(__dirname, 'public', 'uploads', 'avatars');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const userIdPrefix = req.session.user?.id ? req.session.user.id + '-' : '';
+    cb(null, userIdPrefix + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: function (req, file, cb) {
+    const filetypes = /jpeg|jpg|png|gif/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    cb(new Error('Only image files are allowed!'));
+  }
+});
 
 // Routes
 app.get("/", (req, res) => {
@@ -78,30 +111,50 @@ app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
-app.post("/signup", async (req, res) => {
+app.post("/signup", upload.single('profilePic'), async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, fitnessLevel, interests } = req.body;
   
   if (password !== confirmPassword) {
+    if (req.file) {
+      fs.unlinkSync(req.file.path);
+    }
     return res.render("signup", { error: "Passwords do not match" });
   }
-  
+
   try {
     const [existingUser] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
     
     if (existingUser) {
+      if (req.file) {
+        fs.unlinkSync(req.file.path);
+      }
       return res.render("signup", { error: "Email already in use" });
     }
-    
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const username = `${firstName.toLowerCase()}${lastName.toLowerCase().slice(0, 3)}${Math.floor(Math.random() * 1000)}`;
     
-    await db.query(
-      "INSERT INTO users (firstName, lastName, email, password, username, fitnessLevel, interests) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [firstName, lastName, email, hashedPassword, username, fitnessLevel, interests]
+    // Store only the filename in database
+    let avatarFilename = null;
+    if (req.file) {
+      avatarFilename = req.file.filename;
+    }
+
+    const [result] = await db.query(
+      "INSERT INTO users (firstName, lastName, email, password, username, avatar, fitnessLevel, interests) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [firstName, lastName, email, hashedPassword, username, avatarFilename, fitnessLevel, interests]
     );
     
-    res.redirect('/login');
+    const [newUser] = await db.query("SELECT * FROM users WHERE id = ?", [result.insertId]);
+    // Add full path to session for immediate use
+    newUser.avatar = avatarFilename ? `/uploads/avatars/${avatarFilename}` : null;
+    req.session.user = newUser;
+    
+    res.redirect('/profile');
   } catch (err) {
+    if (req.file) {
+      fs.unlinkSync(req.file.path);
+    }
     console.error("Signup error:", err);
     res.render("signup", { error: "An error occurred. Please try again." });
   }
@@ -114,23 +167,26 @@ app.get("/logout", (req, res) => {
 
 app.get("/profile", requireLogin, async (req, res) => {
   try {
-    // Sample activities data
+    // Get fresh user data from database including avatar
+    const [user] = await db.query("SELECT * FROM users WHERE id = ?", [req.session.user.id]);
+    
+    // Update session with fresh data
+    req.session.user = {
+      ...req.session.user,
+      ...user,
+      avatar: user.avatar ? `/uploads/avatars/${user.avatar}` : null
+    };
+
+    // Sample activities and events data
     const activities = [
       {
         icon: "fas fa-running",
         title: "Morning Run",
         description: "5km in 25 minutes",
         date: new Date()
-      },
-      {
-        icon: "fas fa-bicycle",
-        title: "Cycling Session",
-        description: "15km around the park",
-        date: new Date(Date.now() - 86400000)
       }
     ];
     
-    // Sample events data
     const events = [
       {
         name: "Community 10K Run",
@@ -151,30 +207,66 @@ app.get("/profile", requireLogin, async (req, res) => {
   }
 });
 
+// Add this route for avatar uploads
+app.post('/upload-avatar', requireLogin, upload.single('avatar'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).send('No file uploaded.');
+    }
+    
+    const avatarFilename = req.file.filename;
+    
+    // Delete old avatar if exists
+    if (req.session.user.avatar) {
+      const oldFilename = req.session.user.avatar.includes('/uploads/avatars/') 
+        ? req.session.user.avatar.replace('/uploads/avatars/', '')
+        : req.session.user.avatar;
+      
+      const oldPath = path.join(__dirname, 'public', 'uploads', 'avatars', oldFilename);
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+    }
 
+    // Update database
+    await db.query('UPDATE users SET avatar = ? WHERE id = ?', [avatarFilename, req.session.user.id]);
+    
+    // Get fresh user data
+    const [updatedUser] = await db.query('SELECT * FROM users WHERE id = ?', [req.session.user.id]);
+    
+    // Update session with complete fresh data
+    req.session.user = {
+      ...req.session.user,
+      ...updatedUser,
+      avatar: `/uploads/avatars/${avatarFilename}`
+    };
 
+    res.redirect('/profile');
+  } catch (err) {
+    console.error('Avatar upload error:', err);
+    res.status(500).send('Error uploading avatar');
+  }
+});
 
-// Users List Route
 app.get("/users", requireLogin, async (req, res) => {
   try {
-    const [users] = await db.query(`
-      SELECT 
-        u.id, 
-        u.firstName, 
-        u.lastName, 
-        u.username, 
-        u.avatar, 
-        u.fitnessLevel, 
-        u.interests,
-        COUNT(f.id) AS friendsCount
-      FROM users u
-      LEFT JOIN friends f ON u.id = f.user_id
-      GROUP BY u.id
-    `);
-    res.render("users", { users });
+    const users = await db.query("SELECT * FROM users");
+    
+    const usersWithAvatars = users.map(user => ({
+      ...user,
+      // Construct full path here
+      avatar: user.avatar 
+        ? `/uploads/avatars/${user.avatar}`  // avatar contains just filename
+        : '/images/default-avatar.jpg'
+    }));
+
+    res.render("users", { 
+      users: usersWithAvatars,
+      currentUser: req.session.user 
+    });
   } catch (err) {
     console.error("Users list error:", err);
-    res.status(500).send("Error loading users list");
+    res.status(500).send("Error loading users");
   }
 });
 

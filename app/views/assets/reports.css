@@ -86,7 +86,7 @@
     max-width: 800px;
     margin: 2rem auto;
     padding: 2rem;
-    background: #2c4235;
+    background: #5f796a;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
@@ -119,7 +119,7 @@
   
   .form-group {
     margin-bottom: 1rem;
-    color: #e1ee99;
+    color: #e1ee9952;
   }
   
   label {

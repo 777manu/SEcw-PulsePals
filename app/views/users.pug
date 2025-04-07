@@ -16,7 +16,7 @@ html(lang="en")
           li
             a(href="/events") Events
           li
-            a(href="#") Partner matching
+            a(href="/partner-matching") Partner matching
           li
             a(href="/report") Safety and reports
         .right
@@ -25,18 +25,40 @@ html(lang="en")
 
     .users-container
       h1 Connect with Friends
+     
+      .search-filter
+        form(method="get", action="/users")
+          input(type="text", name="search", placeholder="Search by name or username")
+          select(name="fitnessLevel")
+            option(value="") All Levels
+            option(value="beginner") Beginner
+            option(value="intermediate") Intermediate
+            option(value="advanced") Advanced
+          button(type="submit") Filter
+     
       .users-grid
         each user in users
           .user-card
             .user-avatar
-              img(src=user.avatar || "/images/default-avatar.jpg", alt=user.username)
+              if user.avatar
+                img(src=user.avatar, alt=`${user.firstName}'s avatar`)
+              else
+                img(src="/images/default-avatar.jpg", alt=`${user.firstName} ${user.lastName}`)
             .user-info
               h3 #{user.firstName} #{user.lastName}
-              p @#{user.username}
+              p.username @#{user.username}
+              if user.fitnessLevel
+                p.fitness-level
+                  span.label Fitness Level:
+                  span.value(class=user.fitnessLevel) #{user.fitnessLevel}
+              if user.interests
+                p.interests
+                  span.label Interests:
+                  span.value #{user.interests}
               .user-stats
                 .stat
-                  span #{user.friendsCount}
-                  | Friends
+                  span.count #{user.friendsCount}
+                  span.label Friends
               .user-actions
                 a(href=`/profile/${user.id}`, class="btn btn-view") View Profile
                 button(class="btn btn-add-friend") Add Friend

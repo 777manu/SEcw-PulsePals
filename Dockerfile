@@ -18,7 +18,8 @@ RUN apk add --no-cache imagemagick
 RUN npm install -g supervisor && npm install && npm install supervisor
 
 # Create uploads directory
-RUN mkdir -p public/uploads && chmod -R 777 public/uploads
+RUN mkdir -p /src/public/uploads/avatars && \
+    chmod -R 777 /src/public/uploads
 
 # Remove build tools to keep image small
 RUN apk del .gyp
