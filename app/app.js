@@ -488,7 +488,6 @@ app.get("/events", async (req, res) => {
     query += " ORDER BY date ASC";
     const events = await db.query(query, params);
 
-    // Check if user is registered for each event
     let eventsWithRegistration = events;
     if (req.session.user) {
       eventsWithRegistration = await Promise.all(events.map(async (event) => {
@@ -498,7 +497,8 @@ app.get("/events", async (req, res) => {
         );
         return {
           ...event,
-          registered: !!registration
+          registered: !!registration,
+          registrationId: registration?.id // Include registration ID if needed
         };
       }));
     }
@@ -527,7 +527,7 @@ app.post("/register-event", requireLogin, async (req, res) => {
     );
 
     if (existing) {
-      return res.status(400).json({ error: "Already registered for this event" });
+      return res.redirect('/events');
     }
 
     await db.query(
@@ -539,6 +539,23 @@ app.post("/register-event", requireLogin, async (req, res) => {
   } catch (err) {
     console.error("Registration error:", err);
     res.status(500).send("Error registering for event");
+  }
+});
+
+app.post("/unregister-event", requireLogin, async (req, res) => {
+  try {
+    const { event_id } = req.body;
+    const user_email = req.session.user.email;
+
+    await db.query(
+      "DELETE FROM registrations WHERE user_email = ? AND event_id = ?",
+      [user_email, event_id]
+    );
+
+    res.redirect('/events');
+  } catch (err) {
+    console.error("Unregistration error:", err);
+    res.status(500).send("Error unregistering from event");
   }
 });
 

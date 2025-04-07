@@ -64,15 +64,16 @@ html(lang="en")
                 p.description #{event.description}
                 if user
                   if event.registered
-                    button.registered-btn Already Registered
+                    form(action="/unregister-event", method="POST")
+                      input(type="hidden", name="event_id", value=event.id)
+                      button(type="submit", class="unregister-btn") Unregister
                   else
                     form(action="/register-event", method="POST")
                       input(type="hidden", name="event_id", value=event.id)
                       button(type="submit", class="register-btn") Register Now
                 else
                   a(href="/login", class="register-btn") Login to Register
-        else
-          p.no-events No events found matching your criteria.
+
 
     footer
       .container
